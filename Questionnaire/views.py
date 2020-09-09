@@ -196,7 +196,7 @@ def classify_and_learn_display_stimuli_type1(request):
             classify_stimuli.file_name = "colorNoCue/set3/" + request.session['file_name']
 
         elif request.session['setnumber'] == 4:
-            request.session['file_name'] = str(Classify_And_Learn_Samples_set1.objects.get(pk=request.session['quid']).sample_img.path)
+            request.session['file_name'] = str(Classify_And_Learn_Samples_set5.objects.get(pk=request.session['quid']).sample_img.path)
             classify_stimuli.file_name = "colorNoCue/set4/" + request.session['file_name']
 
         if option=="A":
@@ -297,7 +297,8 @@ def classify_performance_type1(request):
         request.session['iteration']+=1
         request.session['flag_training'] = False
         request.session['score'] = 0
-        #check for iterations if greater than 10 : what to do?
+        if request.session['iteration'] > 10:
+            return render(request,"Questionnaire/early_exit.html")
         return render(request,"Questionnaire/observe_and_learn.html",{"iteration":request.session['iteration']})
     else:
         #Testing phase
