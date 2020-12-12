@@ -506,7 +506,8 @@ def common_features_test_block_display_stimuli_type1(request):
             request.session['correct_answer'] = "B"
             common_feature.user_option = "B"
 
-        if request.session['file_name'].find("A") != -1:
+
+        if (request.session['file_name'].find("A1")!=-1 or request.session['file_name'].find("A2")!=-1 or request.session['file_name'].find("A3")!=-1 or request.session['file_name'].find("A4")!=-1 or request.session['file_name'].find("A5")!=-1):
             common_feature.correct_option = "A"
         else:
             common_feature.correct_option = "B"
@@ -574,7 +575,7 @@ def common_features_test_block_display_stimuli_type1(request):
             request.session['common_features_test_samples'] = request.session['common_features_test_samples'][1:]
         elif request.session['setnumber'] == 4:
             request.session['common_features_test_samples'] = list(Common_Features_Test_set5.objects.all().values_list('id', flat=True))
-            random.shuffle(request.session['test_samples'])
+            random.shuffle(request.session['common_features_test_samples'])
             request.session['quid'] = request.session['common_features_test_samples'][0]
             samples = Common_Features_Test_set5.objects.get(pk=request.session['quid'])
             request.session['common_features_test_samples'] = request.session['common_features_test_samples'][1:]
@@ -587,6 +588,7 @@ def save_responses_description(request):
     if request.method == "POST":
         try:
             desc = request.POST.get('description', None)
+            desc = desc.replace(',','$')
             if len(desc) != 0:
                 user_response = UserResponsesForDescription()
                 user_response.description = desc

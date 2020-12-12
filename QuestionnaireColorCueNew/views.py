@@ -202,17 +202,13 @@ def classify_and_learn_display_stimuli_type3(request):
 
         if option == "A":
             classify_stimuli.user_option = "A"
-            if (request.session['file_name'].find("Target00") != -1 or request.session['file_name'].find(
-                    "Target01") != -1 or request.session['file_name'].find("Target02") != -1 or request.session[
-                'file_name'].find("Target03") != -1 or request.session['file_name'].find("Target04") != -1):
+            if request.session['file_name'].find("Target")!=-1:
                 classify_stimuli.correct = 1
             else:
                 classify_stimuli.correct = 0
         else:
             classify_stimuli.user_option = "B"
-            if (request.session['file_name'].find("Contrast00") != -1 or request.session['file_name'].find(
-                    "Contrast01") != -1 or request.session['file_name'].find("Contrast02") != -1 or request.session[
-                'file_name'].find("Contrast03") != -1 or request.session['file_name'].find("Contrast04") != -1):
+            if request.session['file_name'].find("Contrast")!=-1:
                 classify_stimuli.correct = 1
             else:
                 classify_stimuli.correct = 0
@@ -231,6 +227,7 @@ def classify_and_learn_display_stimuli_type3(request):
 
     if len(request.session['classify_learn_samples'])!=0:
         id = request.session['classify_learn_samples'][0]
+        request.session['quid'] = id
         request.session['classify_learn_samples'] = request.session['classify_learn_samples'][1:]
         if len(request.session['classify_learn_samples']) == 0:
             request.session['flag_test'] = True
@@ -514,7 +511,7 @@ def common_features_test_block_display_stimuli_type3(request):
             request.session['correct_answer'] = "B"
             common_feature.user_option = "B"
 
-        if request.session['file_name'].find("A") != -1:
+        if (request.session['file_name'].find("A1")!=-1 or request.session['file_name'].find("A2")!=-1 or request.session['file_name'].find("A3")!=-1 or request.session['file_name'].find("A4")!=-1 or request.session['file_name'].find("A5")!=-1):
             common_feature.correct_option = "A"
         else:
             common_feature.correct_option = "B"
@@ -585,7 +582,7 @@ def common_features_test_block_display_stimuli_type3(request):
             request.session['common_features_test_samples'] = request.session['common_features_test_samples'][1:]
         elif request.session['setnumber'] == 4:
             request.session['common_features_test_samples'] = list(Common_Features_Test_set5.objects.all().values_list('id', flat=True))
-            random.shuffle(request.session['test_samples'])
+            random.shuffle(request.session['common_features_test_samples'])
             request.session['quid'] = request.session['common_features_test_samples'][0]
             samples = Common_Features_Test_set5.objects.get(pk=request.session['quid'])
             request.session['common_features_test_samples'] = request.session['common_features_test_samples'][1:]
@@ -599,6 +596,7 @@ def save_responses_description(request):
     if request.method == "POST":
         try:
             desc = request.POST.get('description', None)
+            desc = desc.replace(',','$')
             if len(desc) != 0:
                 user_response = UserResponsesForDescription()
                 user_response.description = desc
